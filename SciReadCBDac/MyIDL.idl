@@ -1,0 +1,220 @@
+// MyIDL.idl
+// IDL file for the Simple Com object
+
+#include <olectl.h>
+#include "dispids.h"
+
+[
+	uuid(77C4907A-1AFD-4838-89E5-9B1B8E0BF007),
+	helpstring(""),
+	version(1.0)
+]
+library SciReadCBDac
+{
+	importlib("stdole32.tlb");
+	import "ReadAnalog.idl";
+	[
+		uuid(8244515C-54A3-4A64-A260-8C9BD432DF5D),
+		helpstring("Interface")
+	]
+	dispinterface ISciReadCBDac
+	{
+	properties:
+		[id(DISPID_BoardNumber), bindable, helpstring("AD board number")]
+		long			BoardNumber;
+		[id(DISPID_AmInitialized), bindable, helpstring("AD initialized flag")]
+		VARIANT_BOOL	AmInitialized;
+		[id(DISPID_ChannelNumber), bindable, helpstring("AD channel number")]
+		long			ChannelNumber;
+		[id(DISPID_IntegratingSignal), bindable, helpstring("Integrating signal")]
+		VARIANT_BOOL	IntegratingSignal;
+		[id(DISPID_IntegrationTime), bindable, helpstring("Integration time in ms")]
+		long			IntegrationTime;
+		[id(DISPID_ScanRate), bindable, helpstring("Scan rate points per second")]
+		long			ScanRate;
+		[id(DISPID_ADResolution), readonly, helpstring("AD resolution in bits")]
+		long			ADResolution;
+		[id(DISPID_WantIntegrateSignal), bindable, helpstring("Flag want signal integration")]
+		VARIANT_BOOL	WantIntegrateSignal;
+		[id(DISPID_WantAutoTimeConstant), bindable, helpstring("Auto time constant on flag")]
+		VARIANT_BOOL	WantAutoTimeConstant;
+	methods:
+		[id(DISPID_VoltageRange), propget, bindable, helpstring("Current voltage range")]
+		double			VoltageRange(
+							[in, out]	double		*	minVoltage);
+		[id(DISPID_VoltageRange), propput, bindable, helpstring("Current voltage range")]
+		void			VoltageRange(
+							[in, out]	double		*	minVoltage,
+							[in]		double			maxVoltage);
+		[id(DISPID_VoltageRanges), propget, helpstring("Available voltage ranges")]
+		SAFEARRAY(double)	VoltageRanges(
+								[in, out]	SAFEARRAY(double)*	MinVoltages);
+		[id(DISPID_GetSignalReading), helpstring("Single reading")]
+		double			GetSingleReading();
+		[id(DISPID_ConfigDigitalBit), helpstring("Configure a digital bit for input or output")]
+		VARIANT_BOOL	ConfigDigitalBit(
+							[in]		short			bitNumber,
+							[in]		VARIANT_BOOL	forOutput);
+		[id(DISPID_WriteDigitalBit), helpstring("Write a digital bit")]
+		VARIANT_BOOL	WriteDigitalBit(
+							[in]		short			bitNumber,
+							[in]		VARIANT_BOOL	fHi);
+		[id(DISPID_ReadDigitalBit), helpstring("Read a digital bit")]
+		VARIANT_BOOL	ReadDigitalBit(
+							[in]		short			bitNumber,
+							[out]		VARIANT_BOOL*	fHi);
+		[id(DISPID_OutputAnalog), helpstring("Output analog signal")]
+		VARIANT_BOOL	OutputAnalog(
+							[in]		short int		channel,
+							[in]		double			value);
+		[id(DISPID_ReadAnalogInput), helpstring("Read analog signal")]
+		VARIANT_BOOL	ReadAnalogInput(
+							[in]		short int		channel,
+							[out]		unsigned short*	dataValue);
+		[id(DISPID_CountsToVoltage), helpstring("Convert counts to volts")]
+		VARIANT_BOOL	CountsToVoltage(
+							[in]		unsigned short	dataValue,
+							[out]		double		*	voltage);
+		[id(DISPID_VoltageToCounts), helpstring("Convert voltage to counts")]
+		VARIANT_BOOL	VoltageToCounts(
+							[in]		double			voltage,
+							[out]		unsigned short*	dataValue);
+		[id(DISPID_Setup), helpstring("Display the setup dialog")]
+		void			Setup(
+							[in]		long			hwnd);
+		[id(DISPID_SetupAutoTimeConstant), helpstring("Setup auto time constant")]
+		void			SetupAutoTimeConstant(
+							[in]		long			hwnd);
+		[id(DISPID_TestAutoTimeConstant), helpstring("Test the auto time constant")]
+		BSTR			TestAutoTimeConstant(
+							[in]		long			hwnd);
+	}
+	[
+		uuid(C831A675-3AE1-4B34-9DE3-BE58E9CD7B55),
+		helpstring(" event interface")
+	]
+	dispinterface _SciReadCBDac
+	{
+	properties:
+	methods:
+		[id(DISPID_QueryMainWindow), helpstring("Ask for main window")]
+		void				QueryMainWindow(
+								[out]		long	*	hwndMain);
+		[id(DISPID_RequestConfigFile), helpstring("Ask for config file")]
+		void				RequestConfigFile(
+								[out]		BSTR		*	ConfigFile);
+		[id(DISPID_RequestIniFile), helpstring("Ask for INI file")]
+		void				RequestIniFile(
+								[out]		BSTR		*	IniFile);
+		[id(DISPID_RequestCurrentPosition), helpstring("Request the current position")]
+		void				RequestCurrentPosition(
+								[out]		double		*	position,
+								[out]		VARIANT_BOOL*	handled);
+		[id(DISPID_RequestSetPosition), helpstring("Request set position")]
+		void				RequestSetPosition(
+								[in]		double			newPosition,
+								[out]		VARIANT_BOOL*	handled);
+		[id(DISPID_Error), helpstring("Some kind of error")]
+		void				Error(
+								[in]		BSTR			Error);
+		[id(DISPID_RequestScanningStatus), helpstring("Request the scanning status")]
+		void				RequestScanningStatus(
+								[out]		VARIANT_BOOL*	AmScanning);
+		[id(DISPID_RequestWorkingDirectory), helpstring("Ask the client for the working directory")]
+		void				RequestWorkingDirectory(
+								[out]		BSTR		*	WorkingDirectory,
+								[out]		VARIANT_BOOL*	fHandled);
+		[id(DISPID_HaveArrayScan), helpstring("Have array scan data")]
+		void				HaveArrayScan(
+								[in]		SAFEARRAY(unsigned short)	arr);
+		[id(DISPID_HaveVoltageScan), helpstring("Have voltage scan")]
+		void				HaveVoltageScan(
+								[in]		SAFEARRAY(double)	arr);
+		[id(DISPID_haveIntSignal), helpstring("Have integration time signal during scanning")]
+		void				haveIntSignal(
+								[in, out]	SAFEARRAY(double)*	arr,
+								[in, out]	long			*	nAttempts,
+								[out]		VARIANT_BOOL	*	continueScan);
+	}	
+	[
+		uuid(DF890F52-1AC3-42E3-9DB6-958AB48B87AE),
+		helpstring("class")
+	]
+	coclass SciReadCBDac
+	{
+		[default]			dispinterface			ISciReadCBDac;
+		[default, source]	dispinterface			_SciReadCBDac;
+							interface				_IReadAnalog;
+	}
+	[
+		uuid(1AB5F9FD-EC5C-4E75-8FA1-8D586232951E),
+		helpstring("IMyContainer interface")
+	]
+	dispinterface IMyContainer
+	{
+	properties:
+	methods:
+		[id(DISPID_Container_CreateObject), helpstring("Create an object")]
+		VARIANT_BOOL		CreateObject(
+								[in]			BSTR			ProgID,
+								[in]			BSTR			ObjectName,
+								[in]			BSTR			StorageFile,
+								[in]			long			left,
+								[in]			long			top,
+								[in]			long			right,
+								[in]			long			bottom);
+		[id(DISPID_Container_OnPropRequestEdit), helpstring("Property request edit")]
+		VARIANT_BOOL		OnPropRequestEdit(
+								[in]			BSTR			ObjectName,
+								[in]			long			Dispid);
+		[id(DISPID_Container_OnPropChanged), helpstring("Property changed event")]
+		void				OnPropChanged(
+								[in]			BSTR			ObjectName,
+								[in]			long			Dispid);
+		[id(DISPID_Container_OnSinkEvent), helpstring("Custom sink event")]
+		void				OnSinkEvent(
+								[in]			BSTR			ObjectName,
+								[in]			long			Dispid,
+								[in]			VARIANT			Parameters);
+		[id(DISPID_Container_CloseObject), helpstring("Close an object")]
+		void				CloseObject(
+								[in]			BSTR			ObjectName);
+		[id(DISPID_Container_AmbientProperty), propget, helpstring("Get an ambient property")]
+		VARIANT				AmbientProperty(
+								[in]			long			Dispid);
+		[id(DISPID_Container_GetNamedObject), helpstring("Get the named object, extended interface")]
+		IDispatch		*	GetNamedObject(
+								[in]			BSTR			ObjectName);
+		[id(DISPID_Container_CloseAllObjects), helpstring("Close all objects held by this container")]
+		void				CloseAllObjects();
+		[id(DISPID_Container_TryMNemonic), helpstring("Attempt to call MNemonic on object")]
+		VARIANT_BOOL		TryMNemonic(
+								[in]		SAFEARRAY(unsigned char) msg);
+	}
+	[
+		uuid(44E8D280-12DB-438F-B246-13BA19F66B7D),
+		helpstring("IMyExtended interface")
+	]
+	dispinterface IMyExtended
+	{
+	properties:
+		[id(DISPID_Name), readonly, helpstring("Name assigned to the object")]
+		BSTR				Name;
+		[id(DISPID_Object), readonly, helpstring("Active X object")]
+		IUnknown		*	Object;
+	methods:
+		[id(DISPID_Extended_DoCreateObject), helpstring("Create the object")]
+		VARIANT_BOOL		DoCreateObject(
+								[in]		long			hwndParent,
+								[in]		BSTR			StorageFile,
+								[in]		long			left,
+								[in]		long			top,
+								[in]		long			right,
+								[in]		long			bottom);
+		[id(DISPID_Extended_DoCloseObject), helpstring("Close the object")]
+		void				DoCloseObject();
+		[id(DISPID_Extended_TryMNemonic), helpstring("Attempt to call MNemonic on object")]
+		VARIANT_BOOL		TryNMemonic(
+								[in]		SAFEARRAY(unsigned char) msg);
+	}
+}

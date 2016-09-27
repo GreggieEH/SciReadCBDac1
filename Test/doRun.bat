@@ -1,0 +1,1 @@
+"C:\Windows\SysWOW64\wscript.exe" "C:\Users\Greg\Documents\Visual Studio 2015\Projects\SciReadCBDac\Test\RunReadCBDac.vbs"
