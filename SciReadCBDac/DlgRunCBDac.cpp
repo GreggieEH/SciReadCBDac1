@@ -5,6 +5,8 @@
 #include "PlotWindow.h"
 #include "MyGuids.h"
 
+// this is a change
+
 #define			TMR_READING					0x0001				// reading timer
 #define			TMR_CHECKCURRENTPOSITION	0x0002				// monitor the current position
 
